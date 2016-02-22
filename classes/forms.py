@@ -7,6 +7,7 @@ class UserRegistrationForm(forms.ModelForm):
                                widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password',
                                 widget=forms.PasswordInput)
+    if_teacher_keyword = forms.CharField(label="Keyword if you are teacher", required=False)
 
     class Meta:
         model = User

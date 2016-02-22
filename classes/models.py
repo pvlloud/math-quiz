@@ -12,3 +12,6 @@ class Pupil(models.Model):
 class Teacher(models.Model):
     user = models.OneToOneField(User)
     keyword = models.CharField(max_length=256)
+
+    def __str__(self):
+        return "Teacher " + self.user.username
