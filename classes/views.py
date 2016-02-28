@@ -39,14 +39,11 @@ class BindPupilToTeacher(LoginRequiredMixin, UserPassesTestMixin, FormView):
         except Pupil.DoesNotExist:
             return False
 
-    def form_invalid(self, form):
-        messages.add_message(self.request, messages.ERROR, 'Wrong Keyword!')
-        return super(BindPupilToTeacher, self).form_invalid(form)
-
     def form_valid(self, form):
         teacher = Teacher.objects.get(pk=self.kwargs["pk"])
         if form.cleaned_data['keyword'] == teacher.keyword:
             teacher.pupils.add(self.request.user.pupil)
         else:
+            messages.add_message(self.request, messages.ERROR, 'Wrong Keyword!')
             return self.form_invalid(form)
         return super(BindPupilToTeacher, self).form_valid(form)
