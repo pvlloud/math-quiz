@@ -1,6 +1,8 @@
-from forms import UserRegistrationForm
+from forms import UserRegistrationForm, PupilKeywordForm
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 from models import Teacher, Pupil
 
 
@@ -22,3 +24,29 @@ class RegisterView(FormView):
         else:
             pupil = Pupil.objects.create(user=new_user)
         return super(RegisterView, self).form_valid(form)
+
+
+class BindPupilToTeacher(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    login_url = reverse_lazy('classes:login')
+    template_name = 'classes/pupil_to_teacher_keyword.html'
+    form_class = PupilKeywordForm
+
+    def test_func(self):
+        try:
+            ppl = self.request.user.pupil
+            if ppl is not None:
+                return True
+        except Pupil.DoesNotExist:
+            return False
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, 'Wrong Keyword!')
+        return super(BindPupilToTeacher, self).form_invalid(form)
+
+    def form_valid(self, form):
+        teacher = Teacher.objects.get(pk=self.kwargs["pk"])
+        if form.cleaned_data['keyword'] == teacher.keyword:
+            teacher.pupils.add(self.request.user.pupil)
+        else:
+            return self.form_invalid(form)
+        return super(BindPupilToTeacher, self).form_valid(form)
