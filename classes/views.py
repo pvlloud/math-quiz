@@ -32,7 +32,12 @@ class BindPupilToTeacher(LoginRequiredMixin, UserPassesTestMixin, FormView):
     form_class = PupilKeywordForm
 
     def test_func(self):
-        return self.request.user.classUser.is_pupil
+        try:
+            ppl = self.request.user.pupil
+            if ppl is not None:
+                return True
+        except Pupil.DoesNotExist:
+            return False
 
     def form_valid(self, form):
         teacher = Teacher.objects.get(pk=self.kwargs["pk"])
