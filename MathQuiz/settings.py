@@ -128,3 +128,5 @@ LOGIN_REDIRECT_URL = "/classes/profile"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+LOGIN_URL = "/classes/login"

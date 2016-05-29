@@ -1,0 +1,30 @@
+{% extends 'mathquiz/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Учитель {{ object }}{% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <h3>Учитель {{ object }}</h3>
+    {% if object.about %}
+    <ul>
+            <li>{{ object.about }}</li>
+    </ul>
+    {% endif %}
+    {% if user.pupil %}
+        {% if not is_pupils_teacher %}
+        <form action="{% url 'classes:bind_to_teacher' object.id %}" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="keyword">Ключевое слово учителся: </label>
+            <input type="text" name="keyword" placeholder="Ключевое слово..." class="form-control" id="keyword">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px">Стать учеником</button>
+        </form>
+        {% else %}
+        <p>Вы являетесь учеником данного учителя</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

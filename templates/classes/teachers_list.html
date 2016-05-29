@@ -1,0 +1,15 @@
+{% extends 'mathquiz/base.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ category.name }}{% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+        <ul>
+            {% for object in object_list %}
+                <li><a href="{{ object.get_url }}">{{ object }}</a></li>
+            {% endfor %}
+        </ul>
+{% endblock %}

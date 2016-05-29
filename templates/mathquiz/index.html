@@ -1,6 +1,5 @@
 {% extends 'mathquiz/base.html' %}
 {% load staticfiles %}
-{% load all_categories %}
 
 {% block title %}MathQuiz{% endblock %}
 
@@ -9,26 +8,12 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            {% all_categories %}
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <div class="jumbotron">
-              <h1>MathQuiz</h1>
-              <p class="lead">
-                  Добро пожаловать в нашу систему. Вы можете ознакомиться с задачами по темам из списка справа.
-                  {% if not user.is_authenticated %}
-                  Однако, если Вы желаете, чтобы Ваши знания оценили, мы предлагаем Вам
-                  <a href="{% url 'classes:register' %}">зарегистрироваться</a> и стать учеником одного из учителей.
-                  {% endif %}
-              </p>
-          </div>
-        </div>
-      </div>
-    </div>
+  <h1>MathQuiz</h1>
+  <p class="lead">
+      Добро пожаловать в нашу систему. Вы можете ознакомиться с задачами по темам из списка справа.
+      {% if not user.is_authenticated %}
+      Однако, если Вы желаете, чтобы Ваши знания оценили, мы предлагаем Вам
+      <a href="{% url 'classes:register' %}">зарегистрироваться</a> и стать учеником одного из учителей.
+      {% endif %}
+  </p>
 {% endblock %}

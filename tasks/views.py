@@ -1,47 +1,41 @@
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import CreateView, ListView, DetailView
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView
+
 from classes.models import Teacher, Pupil
+from classes.views import UserIsPupilMixin, UserIsTeacherMixin
 
 from models import Category, Task, Attempt
 
 
-class CreateCategory(UserPassesTestMixin, CreateView):
+class CreateCategory(LoginRequiredMixin, UserIsTeacherMixin, CreateView):
     model = Category
-
-    def test_func(self):
-        try:
-            ppl = self.request.user.teacher
-            if ppl is not None:
-                return True
-        except Teacher.DoesNotExist:
-            return False
+    fields = ['name']
+    success_url = "/tasks/category_list"
 
 
-class CreateTask(UserPassesTestMixin, CreateView):
+class CreateTask(LoginRequiredMixin, UserIsTeacherMixin, CreateView):
     model = Task
+    fields = ['category', 'level', 'picture', 'text', 'answer']
+    success_url = "/tasks/category_list"
+    template_name = "tasks/create_task.html"
 
-    def test_func(self):
-        return self.request.user.classUser.is_teacher
 
-
-class SolutionAttempt(UserPassesTestMixin, CreateView):
+class SolutionAttempt(LoginRequiredMixin, UserIsPupilMixin, CreateView):
     model = Attempt
+    fields = ['answer']
 
-    def test_func(self):
-        try:
-            ppl = self.request.user.pupil
-            if ppl is not None:
-                return True
-        except Pupil.DoesNotExist:
-            return False
+    def get_success_url(self):
+        return reverse('tasks:tasks_by_category', args=[Task.objects.get(pk=self.kwargs["pk"]).category_id, 0])
 
-    def get_initial(self):
-        initial = super(SolutionAttempt, self).get_initial()
-        initial = initial.copy()
-        initial['pupil'] = self.request.user.classUser
-        initial['task'] = Task.objects.get(pk=self.kwargs["pk"])
-        return initial
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.pupil = self.request.user.pupil
+        obj.task = Task.objects.get(pk=self.kwargs["pk"])
+        return super(SolutionAttempt, self).form_valid(obj)
 
     def get_context_data(self, **kwargs):
         context = super(SolutionAttempt, self).get_context_data()
@@ -49,14 +43,52 @@ class SolutionAttempt(UserPassesTestMixin, CreateView):
         return context
 
 
-class CategoryTasks(ListView):
+class CategoryLevelTasks(ListView):
     template_name = 'tasks/category_tasks.html'
 
     def get_queryset(self):
-        return Task.objects.filter(category_id=self.kwargs["pk"])
+        category_tasks = Task.objects.filter(category_id=self.kwargs["pk"])
+        if int(self.kwargs['level']) == 0:
+            return category_tasks
+        return category_tasks.filter(level=self.kwargs['level'])
 
     def get_context_data(self, **kwargs):
-        context = super(CategoryTasks, self).get_context_data()
+        context = super(CategoryLevelTasks, self).get_context_data()
         category = Category.objects.get(pk=self.kwargs["pk"])
         context['category'] = category
+        context['level'] = self.kwargs["level"]
         return context
+
+
+class ShowTask(DetailView):
+    model = Task
+    template_name = "tasks/show_task.html"
+
+
+class ShowAttempt(LoginRequiredMixin, UserIsTeacherMixin, DetailView):
+    model = Attempt
+    template_name = "tasks/show_attempt.html"
+
+
+class MarkAttempt(UpdateView, UserPassesTestMixin):
+    model = Attempt
+    fields = ['mark']
+
+    def test_func(self):
+        is_teacher = False
+        try:
+            any_user = self.request.user.teacher
+            if any_user is not None:
+                is_teacher = True
+        except Teacher.DoesNotExist:
+            return is_teacher
+        is_own = self.object.pupil in self.request.user.teacher.pupils.all()
+        return is_own and is_teacher
+
+    def get_success_url(self):
+        return reverse('tasks:show_pupil', args=[self.object.pupil.id])
+
+
+class CategoryList(ListView):
+    model = Category
+    template_name = "tasks/category_list.html"

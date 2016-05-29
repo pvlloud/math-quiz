@@ -1,0 +1,18 @@
+{% extends 'mathquiz/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Ученик {{ object }}{% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <h3>Ученик {{ object }}</h3>
+    {% if attempts %}
+        <ul>
+        {% for attempt in attempts %}
+            <li><a href="{{ attempt.get_url }}">На задачу {{ attempt.task.id }} дан ответ {{ attempt.answer }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'mathquiz/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Задача {{ object.task.id }} (для оценки){% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <h3>Задача {{ object.task.id }} (для оценки)</h3>
+    <ul>
+        {% if object.task.picture %}
+            <li>{{ object.picture }}</li>
+        {% endif %}
+            <li>{{ object.task.text }}</li>
+            <li>Правильный ответ: {{ object.task.answer }}</li>
+            <li>Предложенный ответ: {{ object.answer }}</li>
+    </ul>
+    {% if user.teacher %}
+        <form action="{% url 'tasks:mark_attempt' object.id %}" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="mark">Ваша оценка: </label>
+            <input type="text" name="mark" placeholder="Оценка..." class="form-control" id="mark">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px">Оценить</button>
+        </form>
+    {% endif %}
+{% endblock %}

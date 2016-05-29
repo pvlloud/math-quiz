@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from classes.models import Pupil
@@ -11,6 +12,9 @@ class Category(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_url(self):
+        return reverse('tasks:tasks_by_category', args=[self.id, 0])
 
 
 class Task(models.Model):
@@ -31,10 +35,16 @@ class Task(models.Model):
     def __unicode__(self):
         return u'Задача {}'.format(self.id)
 
+    def get_url(self):
+        return reverse('tasks:show_task', args=[self.id])
+
 
 class Attempt(models.Model):
     datetime = models.DateTimeField(auto_now=True)
     task = models.ForeignKey(Task, related_name='attempts')
     pupil = models.ForeignKey(Pupil, related_name='attempts')
     answer = models.CharField(max_length=255)
-    mark = models.IntegerField(default=None)
+    mark = models.IntegerField(default=None, null=True)
+
+    def get_url(self):
+        return reverse('tasks:show_attempt', args=[self.id])

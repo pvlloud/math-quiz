@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load all_categories %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,13 +28,42 @@
               <li><a href="{% url 'classes:register' %}">Sign Up</a></li>
               <li><a href="{% url 'classes:login' %}">Sign In</a></li>
             {% else %}
+              <li><a href="#">{{ user.get_full_name }}</a></li>
               <li><a href="{% url 'classes:logout' %}">Log Out</a></li>
             {% endif %}
           </ul>
+          {% if user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="{% url 'classes:teachers_list' %}">Список учителей</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="{% url 'tasks:category_list' %}">Список тем</a></li>
+          </ul>
+          {% endif %}
+          {% if user.teacher %}
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="{% url 'tasks:create_task' %}" class="btn btn-success" style="color: white">Создать задачу</a></li>
+          </ul>
+          {% endif %}
         </div>
       </div>
     </nav>
-    {% block content %}{% endblock %}
+    <div class="container-fluid">
+      <div class="row">
+        {% block upper %}
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            {% all_categories %}
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div class="jumbotron">
+          {% block content %}{% endblock %}
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
     <script type="text/javascript" src="{% static 'mathquiz/js/jquery-1.12.4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/bootstrap.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/ie10-viewport-bug-workaround.js' %}"></script>

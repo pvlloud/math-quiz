@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.signals import user_logged_in
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,7 +13,18 @@ class Pupil(models.Model):
     sessions_number = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
-        return u'Ученик ' + self.user.username
+        return u'{} {}'.format(self.user.last_name, self.user.first_name)
+
+    def calculate_rating(self):
+        marked_attempts = self.attempts.filter(mark__isnull=False)
+        marks = [int(marked_attempt.mark) for marked_attempt in marked_attempts]
+        if marks:
+            average = sum(marks)/float(len(marks))
+            return average
+        return 0
+
+    def get_url(self):
+        return reverse('classes:show_pupil', args=[self.id])
 
 
 def login_pupil(sender, request, user, **kwargs):
@@ -27,9 +39,20 @@ user_logged_in.connect(login_pupil)
 
 class Teacher(models.Model):
     user = models.OneToOneField(User)
+    about = models.TextField(blank=True)
     keyword = models.CharField(max_length=256)
 
-    pupils = models.ManyToManyField(Pupil, related_name="teachers")
+    pupils = models.ManyToManyField(Pupil, related_name="teachers", blank=True)
 
     def __unicode__(self):
-        return u'Учитель ' + self.user.username
+        return u'{} {}'.format(self.user.last_name, self.user.first_name)
+
+    def get_url(self):
+        return reverse('classes:show_teacher', args=[self.id])
+
+
+class TeacherRegistryKeyword(models.Model):
+    keyword = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.keyword

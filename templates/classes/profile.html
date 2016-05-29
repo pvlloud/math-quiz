@@ -1,0 +1,43 @@
+{% extends 'mathquiz/base.html' %}
+{% load staticfiles %}
+
+{% block title %}{{ object }}{% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <h3>{{ object }}</h3>
+    {% if pupils %}
+        <h3>Список учеников:</h3>
+        <ul>
+        {% for pupil in pupils %}
+            <li><a href="{{ pupil.get_url }}">{{ pupil }}</a>, рейтинг: {{ pupil.calculate_rating }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if teachers %}
+        <h3>Рейтинг: {{ user.pupil.calculate_rating }}</h3>
+        <h3>Список учителей:</h3>
+        <ul>
+        {% for teacher in teachers %}
+            <li><a href="{{ teacher.get_url }}">{{ teacher }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if marked_attempts %}
+        <h3>Список оценок:</h3>
+        <ul>
+        {% for attempt in marked_attempts %}
+            <li>Ответ "{{ attempt.answer }}" на задачу {{ attempt.task.id }} получил оценку {{ attempt.mark }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+        <h3>Техническая информация</h3>
+        <ul>
+            {% if user_type == 'pupil' %}
+            <li>Количество сессий: {{ user.pupil.sessions_number }}</li>
+            {% endif %}
+            <li>Последний заход в систему: {{ user.last_login }}</li>
+        </ul>
+{% endblock %}
