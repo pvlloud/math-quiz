@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from classes.models import Teacher, Pupil
 
@@ -46,4 +46,17 @@ class SolutionAttempt(UserPassesTestMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(SolutionAttempt, self).get_context_data()
         context['task'] = self.initial['task']
+        return context
+
+
+class CategoryTasks(ListView):
+    template_name = 'tasks/category_tasks.html'
+
+    def get_queryset(self):
+        return Task.objects.filter(category_id=self.kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryTasks, self).get_context_data()
+        category = Category.objects.get(pk=self.kwargs["pk"])
+        context['category'] = category
         return context

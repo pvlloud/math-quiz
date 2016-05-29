@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import unicode_literals
 
 from django.contrib.auth.signals import user_logged_in
@@ -10,8 +11,8 @@ class Pupil(models.Model):
     user = models.OneToOneField(User)
     sessions_number = models.PositiveIntegerField(default=0)
 
-    def __str__(self):
-        return "Pupil " + self.user.username
+    def __unicode__(self):
+        return u'Ученик ' + self.user.username
 
 
 def login_pupil(sender, request, user, **kwargs):
@@ -30,5 +31,5 @@ class Teacher(models.Model):
 
     pupils = models.ManyToManyField(Pupil, related_name="teachers")
 
-    def __str__(self):
-        return "Teacher " + self.user.username
+    def __unicode__(self):
+        return u'Учитель ' + self.user.username
