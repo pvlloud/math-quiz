@@ -67,5 +67,14 @@
     <script type="text/javascript" src="{% static 'mathquiz/js/jquery-1.12.4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/bootstrap.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+
+{#    <script type="text/javascript" src="{% static 'mathquiz/js/MathJax.js' %}"></script>#}
+{#    <script type="text/javascript" src="{% static 'mathquiz/js/TeX-AMS_HTML.js' %}"></script>#}
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
 </body>
 </html>

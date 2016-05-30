@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.conf import settings
 
 from classes.models import Pupil
 
@@ -28,7 +29,7 @@ class Task(models.Model):
 
     category = models.ForeignKey(Category, related_name='tasks')
     level = models.IntegerField(choices=LEVEL_CHOICES)
-    picture = models.ImageField(blank=True)
+    picture = models.ImageField(blank=True, upload_to=settings.MEDIA_ROOT)
     text = models.TextField()
     answer = models.CharField(max_length=255)
 

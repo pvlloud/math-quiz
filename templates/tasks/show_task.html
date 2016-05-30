@@ -10,7 +10,7 @@
     <h3>Задача {{ object.id }}</h3>
     <ul>
         {% if object.picture %}
-            <li>{{ object.picture }}</li>
+            <li><img src="/{{ object.picture }}" height="200"/></li>
         {% endif %}
             <li>{{ object.text }}</li>
     </ul>

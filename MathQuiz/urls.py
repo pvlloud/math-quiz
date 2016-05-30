@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -24,3 +25,8 @@ urlpatterns = [
     url(r'^classes/', include('classes.urls', namespace='classes')),
     url(r'^tasks/', include('tasks.urls', namespace='tasks')),
 ]
+
+if settings.DEBUG:
+    # media files
+    urlpatterns.append(url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT}))
