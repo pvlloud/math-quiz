@@ -7,7 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}{% endblock %}</title>
+    <script type="text/javascript" src="{% static 'mathquiz/js/jquery-1.12.4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mathquiz/js/jquery-ui.js' %}"></script>
     <link type="text/css" href="{% static 'mathquiz/css/bootstrap.min.css' %}" rel="stylesheet"/>
+    <link type="text/css" href="{% static 'mathquiz/css/jquery-ui.css' %}" rel="stylesheet" />
     {% block inhead %}{% endblock %}
 </head>
 <body>
@@ -64,7 +67,6 @@
       </div>
       {% endblock %}
     </div>
-    <script type="text/javascript" src="{% static 'mathquiz/js/jquery-1.12.4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/bootstrap.js' %}"></script>
     <script type="text/javascript" src="{% static 'mathquiz/js/ie10-viewport-bug-workaround.js' %}"></script>
     <script type="text/x-mathjax-config">

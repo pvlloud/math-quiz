@@ -18,6 +18,26 @@ class Category(models.Model):
         return reverse('tasks:tasks_by_category', args=[self.id, 0])
 
 
+class TheoryEntry(models.Model):
+    category = models.ForeignKey(Category, related_name='theories')
+    picture = models.ImageField(blank=True)
+    text = models.TextField()
+
+    def __unicode__(self):
+        return u'Теория {}'.format(self.id)
+
+
+class SolvedTask(models.Model):
+    category = models.ForeignKey(Category, related_name='solutions')
+    picture = models.ImageField(blank=True,)
+    question = models.TextField()
+    solution = models.TextField()
+    answer = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return u'Пример {}'.format(self.id)
+
+
 class Task(models.Model):
     LEVEL_CHOICES = (
         (1, u'Уровень 1'),
@@ -29,9 +49,11 @@ class Task(models.Model):
 
     category = models.ForeignKey(Category, related_name='tasks')
     level = models.IntegerField(choices=LEVEL_CHOICES)
-    picture = models.ImageField(blank=True, upload_to=settings.MEDIA_ROOT)
+    picture = models.ImageField(blank=True)
     text = models.TextField()
     answer = models.CharField(max_length=255)
+    theory = models.ForeignKey(TheoryEntry, related_name='tasks', null=True)
+    example = models.ForeignKey(SolvedTask, related_name='tasks', null=True)
 
     def __unicode__(self):
         return u'Задача {}'.format(self.id)

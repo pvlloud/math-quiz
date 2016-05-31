@@ -4,6 +4,15 @@
 {% block title %}Задача {{ object.id }}{% endblock %}
 {% block inhead %}
     <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+    <script type="text/javascript">
+    $(function () {
+        $('#accordion').accordion({
+            collapsible: true,
+            heightStyle: "content",
+            active: false
+        });
+    });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -14,6 +23,34 @@
         {% endif %}
             <li>{{ object.text }}</li>
     </ul>
+    {% if object.theory or object.example %}
+        <div id="accordion">
+            {% if object.theory %}
+                <h3>Теория</h3>
+                <div>
+                    <ul>
+                        {% if object.theory.picture %}
+                            <li><img src="/{{ object.theory.picture }}" height="200"/></li>
+                        {% endif %}
+                        <li>{{ object.theory.text }}</li>
+                    </ul>
+                </div>
+            {% endif %}
+            {% if object.example %}
+                <h3>Пример</h3>
+                <div>
+                    <ul>
+                        {% if object.example.picture %}
+                            <li><img src="/{{ object.example.picture }}" height="200"/></li>
+                        {% endif %}
+                        <li><b>Задача. </b>{{ object.example.question }}</li>
+                        <li><b>Решение. </b>{{ object.example.solution }}</li>
+                        <li><b>Ответ. </b>{{ object.example.answer }}</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
     {% if user.pupil %}
         <form action="{% url 'tasks:solution_attempt' object.id %}" method="post">
         {% csrf_token %}
