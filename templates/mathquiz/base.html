@@ -28,17 +28,19 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             {% if not user.is_authenticated %}
-              <li><a href="{% url 'classes:register' %}">Sign Up</a></li>
-              <li><a href="{% url 'classes:login' %}">Sign In</a></li>
+              <li><a href="{% url 'classes:register' %}">Регистрация</a></li>
+              <li><a href="{% url 'classes:login' %}">Вход</a></li>
             {% else %}
-              <li><a href="#">{{ user.get_full_name }}</a></li>
-              <li><a href="{% url 'classes:logout' %}">Log Out</a></li>
+              <li><a href="{% url 'classes:show_profile' %}">{{ user.get_full_name }}</a></li>
+              <li><a href="{% url 'classes:logout' %}">Выход</a></li>
             {% endif %}
           </ul>
           {% if user.is_authenticated %}
+              {% if user.pupil%}
           <ul class="nav navbar-nav navbar-right">
               <li><a href="{% url 'classes:teachers_list' %}">Список учителей</a></li>
           </ul>
+               {% endif %}
           <ul class="nav navbar-nav navbar-right">
               <li><a href="{% url 'tasks:category_list' %}">Список тем</a></li>
           </ul>

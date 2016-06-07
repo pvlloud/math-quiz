@@ -86,7 +86,7 @@ class MarkAttempt(UpdateView, UserPassesTestMixin):
         return is_own and is_teacher
 
     def get_success_url(self):
-        return reverse('tasks:show_pupil', args=[self.object.pupil.id])
+        return reverse('classes:show_pupil', args=[self.object.pupil.id])
 
 
 class CategoryList(ListView):

@@ -10,7 +10,7 @@
     <h3>Задача {{ object.task.id }} (для оценки)</h3>
     <ul>
         {% if object.task.picture %}
-            <li>{{ object.picture }}</li>
+            <li><img src="/{{ object.task.picture }}" height="200"/></li>
         {% endif %}
             <li>{{ object.task.text }}</li>
             <li>Правильный ответ: {{ object.task.answer }}</li>

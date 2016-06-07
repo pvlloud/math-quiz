@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'classes',
     'tasks',
+
+    'django_extensions'
 ]
 
 MIDDLEWARE_CLASSES = [

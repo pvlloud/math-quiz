@@ -103,3 +103,8 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+.btn-answer {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}

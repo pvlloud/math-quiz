@@ -23,6 +23,16 @@
         {% endif %}
             <li>{{ object.text }}</li>
     </ul>
+    {% if user.pupil %}
+        <form action="{% url 'tasks:solution_attempt' object.id %}" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="answer">Ваш ответ: </label>
+            <input type="text" name="answer" placeholder="Ваш ответ..." class="form-control" id="answer">
+        </div>
+        <button type="submit" class="btn btn-primary btn-answer">Send answer</button>
+        </form>
+    {% endif %}
     {% if object.theory or object.example %}
         <div id="accordion">
             {% if object.theory %}
@@ -50,15 +60,5 @@
                 </div>
             {% endif %}
         </div>
-    {% endif %}
-    {% if user.pupil %}
-        <form action="{% url 'tasks:solution_attempt' object.id %}" method="post">
-        {% csrf_token %}
-        <div class="input-group">
-            <label for="answer">Your answer to this task: </label>
-            <input type="text" name="answer" placeholder="Your answer..." class="form-control" id="answer">
-        </div>
-        <button type="submit" class="btn btn-primary" style="margin-top: 10px">Send answer</button>
-        </form>
     {% endif %}
 {% endblock %}
