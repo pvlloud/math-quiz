@@ -12,7 +12,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return self.name
+        return "{name} (Тема № {num})".format(name=self.name, num=self.id)
 
     def get_url(self):
         return reverse('tasks:tasks_by_category', args=[self.id, 0])
@@ -24,7 +24,7 @@ class TheoryEntry(models.Model):
     text = models.TextField()
 
     def __unicode__(self):
-        return u'Теория {}'.format(self.id)
+        return u'Теория {num} по теме "{theme}"'.format(num=self.id, theme=self.category)
 
 
 class SolvedTask(models.Model):
@@ -35,7 +35,7 @@ class SolvedTask(models.Model):
     answer = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'Пример {}'.format(self.id)
+        return u'Пример {num} по теме "{theme}"'.format(num=self.id, theme=self.category)
 
 
 class Task(models.Model):
