@@ -43,7 +43,7 @@ class RegisterView(FormView):
             form.cleaned_data['password'])
         # Save the User object
         new_user.save()
-        if TeacherRegistryKeyword.objects.get(keyword=form.cleaned_data['if_teacher_keyword']):
+        if TeacherRegistryKeyword.objects.filter(keyword=form.cleaned_data['if_teacher_keyword']):
             teacher = Teacher.objects.create(user=new_user)
         else:
             pupil = Pupil.objects.create(user=new_user)
