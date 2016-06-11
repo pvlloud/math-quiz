@@ -21,7 +21,7 @@
         {% if object.picture %}
             <li><img src="/{{ object.picture }}" height="200"/></li>
         {% endif %}
-            <li>{{ object.text }}</li>
+            <p>{% autoescape off %}{{ object.text }}{% endautoescape %}</p>
     </ul>
     {% if user.pupil %}
         <form action="{% url 'tasks:solution_attempt' object.id %}" method="post">

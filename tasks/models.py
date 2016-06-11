@@ -56,7 +56,7 @@ class Task(models.Model):
     example = models.ForeignKey(SolvedTask, related_name='tasks', null=True)
 
     def __unicode__(self):
-        return u'Задача {}'.format(self.id)
+        return u'Задача {}. {}...'.format(self.id, self.text[:150])
 
     def get_url(self):
         return reverse('tasks:show_task', args=[self.id])

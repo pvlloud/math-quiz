@@ -11,7 +11,7 @@
     {% if attempts %}
         <ul>
         {% for attempt in attempts %}
-            <li><a href="{{ attempt.get_url }}">На задачу {{ attempt.task.id }} дан ответ {{ attempt.answer }}</a></li>
+            <li><a href="{{ attempt.get_url }}">На задачу {{ attempt.task.id }} дан ответ {{ attempt.answer }}</a> {%if attempt.mark != None %} Выставлена оценка {{ attempt.mark }} {% endif %}</li>
         {% endfor %}
         </ul>
     {% endif %}
