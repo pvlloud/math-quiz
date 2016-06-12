@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 
-from classes.models import Pupil
+from classes.models import Pupil, Teacher
 
 
 class Category(models.Model):
@@ -71,3 +71,22 @@ class Attempt(models.Model):
 
     def get_url(self):
         return reverse('tasks:show_attempt', args=[self.id])
+
+    def __unicode__(self):
+        return "Ответ {answer} на азадачу {task}".format(answer=self.answer, task=self.task.id)
+
+
+class Homework(models.Model):
+    pupil = models.ForeignKey(Pupil, related_name='homeworks')
+    teacher = models.ForeignKey(Teacher, related_name='homeworks')
+    tasks = models.ManyToManyField(Task, related_name='homeworks_in', blank=True)
+    is_open = models.BooleanField(default=True)
+
+    def is_answered_full(self):
+        for task in self.tasks.objects.all():
+            if not task.attempts.objects.filter(pupil__is=self.pupil):
+                return False
+        return True
+
+    def __unicode__(self):
+        return u"Домашнее задание {id} от учителя {teacher}".format(id=self.id, teacher=self.teacher)

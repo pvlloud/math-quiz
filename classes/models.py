@@ -26,6 +26,9 @@ class Pupil(models.Model):
     def get_url(self):
         return reverse('classes:show_pupil', args=[self.id])
 
+    def get_homeworks(self):
+        return self.homeworks.filter(is_open=False)
+
 
 def login_pupil(sender, request, user, **kwargs):
     try:
@@ -49,6 +52,19 @@ class Teacher(models.Model):
 
     def get_url(self):
         return reverse('classes:show_teacher', args=[self.id])
+
+    def can_create_homework(self):
+        can_create = True
+        for homework in self.homeworks.all():
+            if homework.is_open:
+                can_create = False
+        return can_create
+
+    def get_open_homework(self):
+        for homework in self.homeworks.all():
+            if homework.is_open:
+                return homework
+        return None
 
 
 class TeacherRegistryKeyword(models.Model):

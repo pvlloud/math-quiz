@@ -1,5 +1,7 @@
 {% extends 'mathquiz/base.html' %}
+{% load category_levels %}
 {% load staticfiles %}
+{% load add_to_homework %}
 
 {% block title %}{{ category.name }}{% endblock %}
 {% block inhead %}
@@ -7,16 +9,8 @@
 {% endblock %}
 
 {% block content %}
+    {% category_levels category %}
     {% if level == '0' %}
-        <h3>Выберите уровень сложности</h3>
-        <ul>
-            <li><a href="{% url 'tasks:tasks_by_category' category.id 1 %}">Уровень 1</a></li>
-            <li><a href="{% url 'tasks:tasks_by_category' category.id 2 %}">Уровень 2</a></li>
-            <li><a href="{% url 'tasks:tasks_by_category' category.id 3 %}">Уровень 3</a></li>
-            <li><a href="{% url 'tasks:tasks_by_category' category.id 4 %}">Уровень 4</a></li>
-            <li><a href="{% url 'tasks:tasks_by_category' category.id 5 %}">Уровень 5</a></li>
-
-        </ul>
         <h3>Задачи всех уровней</h3>
     {% else %}
         <h3>Задачи по теме {{ category.name }} уровня {{ level }}</h3>
@@ -24,7 +18,7 @@
         {% if object_list %}
         <ul>
             {% for object in object_list %}
-                <li><a href="{{ object.get_url }}">{{ object }}</a></li>
+                <li><a href="{{ object.get_url }}">{{ object }}</a> {% add_task object %} </li>
             {% endfor %}
         </ul>
         {% else %}

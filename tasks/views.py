@@ -8,7 +8,7 @@ from django.views.generic.edit import UpdateView
 from classes.models import Teacher, Pupil
 from classes.views import UserIsPupilMixin, UserIsTeacherMixin
 
-from models import Category, Task, Attempt
+from models import Category, Task, Attempt, Homework
 
 
 class CreateCategory(LoginRequiredMixin, UserIsTeacherMixin, CreateView):
@@ -70,7 +70,7 @@ class ShowAttempt(LoginRequiredMixin, UserIsTeacherMixin, DetailView):
     template_name = "tasks/show_attempt.html"
 
 
-class MarkAttempt(UpdateView, UserPassesTestMixin):
+class MarkAttempt(UserPassesTestMixin, UpdateView):
     model = Attempt
     fields = ['mark']
 
@@ -92,3 +92,104 @@ class MarkAttempt(UpdateView, UserPassesTestMixin):
 class CategoryList(ListView):
     model = Category
     template_name = "tasks/category_list.html"
+
+
+class CreateHomework(UserPassesTestMixin, CreateView):
+    model = Homework
+    fields = []
+
+    def get_success_url(self):
+        return reverse('tasks:category_list')
+
+    def test_func(self):
+        is_teacher = False
+        try:
+            this_user = self.request.user.teacher
+            if this_user is not None:
+                is_teacher = True
+        except Teacher.DoesNotExist:
+            return is_teacher
+        can_create = this_user.can_create_homework
+        return can_create and is_teacher
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.pupil = Pupil.objects.get(pk=self.kwargs["pupil"])
+        obj.teacher = self.request.user.teacher
+        return super(CreateHomework, self).form_valid(obj)
+
+
+class TeacherHasOpenHomeworkMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        is_teacher = False
+        try:
+            any_user = self.request.user.teacher
+            if any_user is not None:
+                is_teacher = True
+        except Teacher.DoesNotExist:
+            return is_teacher
+        can_add = False
+        for homework in any_user.homeworks.all():
+            if homework.is_open:
+                can_add = True
+        return can_add and is_teacher
+
+
+class AddTaskToHomework(TeacherHasOpenHomeworkMixin, UpdateView):
+    model = Homework
+    fields = []
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.tasks.add(Task.objects.get(pk=self.kwargs["task"]))
+        return super(AddTaskToHomework, self).form_valid(obj)
+
+    def get_success_url(self):
+        return reverse('tasks:tasks_by_category', args=[Task.objects.get(pk=self.kwargs["task"]).category.id, 0])
+
+
+class CloseHomework(TeacherHasOpenHomeworkMixin, UpdateView):
+    model = Homework
+    fields = []
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.is_open = False
+        return super(CloseHomework, self).form_valid(obj)
+
+    def get_success_url(self):
+        return reverse('classes:profile')
+
+
+class ShowHomework(UserPassesTestMixin, ListView):
+    template_name = 'tasks/show_homework.html'
+
+    def test_func(self):
+        try:
+            this_user = self.request.user.pupil
+        except Pupil.DoesNotExist:
+            try:
+                this_user = self.request.user.teacher
+            except Teacher.DoesNotExist:
+                return False
+        can_see = Homework.objects.get(pk=self.kwargs["homework"]) in this_user.homeworks.all()
+        return can_see
+
+    def get_queryset(self):
+        homework_tasks = Homework.objects.get(pk=self.kwargs["homework"]).tasks.all()
+        return homework_tasks
+
+    def get_context_data(self, **kwargs):
+        context = super(ShowHomework, self).get_context_data()
+        homework = Homework.objects.get(pk=self.kwargs["homework"])
+        context['homework'] = homework
+        attempts = []
+        for task in homework.tasks.all():
+            atts = Attempt.objects.filter(pupil=homework.pupil, task=task)
+            if atts:
+                attempts.append(atts[0])
+            else:
+                attempts.append(task)
+        context['homework_objects'] = attempts
+        return context

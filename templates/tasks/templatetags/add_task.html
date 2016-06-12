@@ -1,0 +1,5 @@
+{% if show %}
+    <form action="{% url "tasks:add_task_to_homework" homework.id task.id %}" method="post" style="display: inline-block;">{% csrf_token %}
+        <button type="submit" class="label label-primary" style="margin-top: 10px">Добавить в домашнее задание</button>
+    </form>
+{% endif %}

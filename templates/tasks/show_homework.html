@@ -1,0 +1,26 @@
+{% extends 'mathquiz/base.html' %}
+{% load category_levels %}
+{% load staticfiles %}
+{% load add_to_homework %}
+
+{% block title %}Домашнее задание {{ homework.id }}{% endblock %}
+{% block inhead %}
+    <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+        <h3>Задачи домашнего задания {{ homework.id }}
+            {% if user.pupil %}
+                от учителя {{ homework.teacher }}
+            {% endif %}
+            {% if user.teacher %}
+                для ученика {{ homework.pupil }}
+            {% endif %}
+        </h3>
+
+        <ul>
+            {% for object in homework_objects %}
+                <li><a href="{{ object.get_url }}">{{ object }}</a></li>
+            {% endfor %}
+        </ul>
+{% endblock %}

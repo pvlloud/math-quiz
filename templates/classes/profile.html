@@ -1,7 +1,7 @@
 {% extends 'mathquiz/base.html' %}
 {% load staticfiles %}
 
-{% block title %}{{ object }}{% endblock %}
+{% block title %}{{ user.get_full_name }}{% endblock %}
 {% block inhead %}
     <link type="text/css" href="{% static 'mathquiz/css/custom.css' %}" rel="stylesheet"/>
 {% endblock %}
@@ -13,6 +13,11 @@
         <ul>
         {% for pupil in pupils %}
             <li><a href="{{ pupil.get_url }}">{{ pupil }}</a>, рейтинг: {{ pupil.calculate_rating }}</li>
+            {% if user.teacher.can_create_homework %}
+            <form action="{% url "tasks:create_homework" pupil.id %}" method="post">{% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-primary">Задать домашнее задание</button>
+            </form>
+            {% endif %}
         {% endfor %}
         </ul>
     {% endif %}
@@ -24,6 +29,9 @@
             <li><a href="{{ teacher.get_url }}">{{ teacher }}</a></li>
         {% endfor %}
         </ul>
+        {% for homework in user.pupil.get_homeworks %}
+            <a href="{% url "tasks:show_homework" homework.id %}">{{ homework }}</a>
+        {% endfor %}
     {% endif %}
     {% if marked_attempts %}
         <h3>Список оценок:</h3>

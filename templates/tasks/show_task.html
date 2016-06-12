@@ -1,5 +1,7 @@
 {% extends 'mathquiz/base.html' %}
+{% load category_levels %}
 {% load staticfiles %}
+{% load add_to_homework %}
 
 {% block title %}Задача {{ object.id }}{% endblock %}
 {% block inhead %}
@@ -16,7 +18,8 @@
 {% endblock %}
 
 {% block content %}
-    <h3>Задача {{ object.id }}</h3>
+    {% category_levels object.category %}
+    <h3>Задача {{ object.id }}</h3> {% add_task object %}
     <ul>
         {% if object.picture %}
             <li><img src="/{{ object.picture }}" height="200"/></li>
