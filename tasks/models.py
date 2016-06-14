@@ -49,11 +49,11 @@ class Task(models.Model):
 
     category = models.ForeignKey(Category, related_name='tasks')
     level = models.IntegerField(choices=LEVEL_CHOICES)
-    picture = models.ImageField(blank=True)
+    picture = models.ImageField(blank=True, upload_to='media/')
     text = models.TextField()
     answer = models.CharField(max_length=255)
-    theory = models.ForeignKey(TheoryEntry, related_name='tasks', null=True)
-    example = models.ForeignKey(SolvedTask, related_name='tasks', null=True)
+    theory = models.ForeignKey(TheoryEntry, related_name='tasks', null=True, blank=True)
+    example = models.ForeignKey(SolvedTask, related_name='tasks', null=True, blank=True)
 
     def __unicode__(self):
         return u'Задача {}. {}...'.format(self.id, self.text[:150])

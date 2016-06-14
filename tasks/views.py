@@ -19,7 +19,7 @@ class CreateCategory(LoginRequiredMixin, UserIsTeacherMixin, CreateView):
 
 class CreateTask(LoginRequiredMixin, UserIsTeacherMixin, CreateView):
     model = Task
-    fields = ['category', 'level', 'picture', 'text', 'answer']
+    fields = ['category', 'level', 'picture', 'text', 'answer', 'theory', 'example']
     success_url = "/tasks/category_list"
     template_name = "tasks/create_task.html"
 

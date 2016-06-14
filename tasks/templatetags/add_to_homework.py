@@ -13,7 +13,7 @@ def add_task(context, task):
         show = bool(homework)
         if show:
             show = task not in homework.tasks.all()
-    except Teacher.DoesNotExist:
+    except (Teacher.DoesNotExist, AttributeError):
         show = False
 
     return {'show': show,
