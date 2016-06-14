@@ -159,7 +159,7 @@ class CloseHomework(TeacherHasOpenHomeworkMixin, UpdateView):
         return super(CloseHomework, self).form_valid(obj)
 
     def get_success_url(self):
-        return reverse('classes:profile')
+        return '/classes/profile'
 
 
 class ShowHomework(UserPassesTestMixin, ListView):

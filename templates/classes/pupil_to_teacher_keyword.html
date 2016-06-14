@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Записаться к учителю</title>
 </head>
 <body>
     {% if messages %}
@@ -17,7 +17,7 @@
     {% endif %}
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Bind" />
+        <input type="submit" value="Записаться" />
     </form>
 </body>
 </html>

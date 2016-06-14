@@ -14,8 +14,8 @@
             <li><a href="{{ attempt.get_url }}">На задачу {{ attempt.task.id }} дан ответ {{ attempt.answer }}</a> {%if attempt.mark != None %} Выставлена оценка {{ attempt.mark }} {% endif %}</li>
         {% endfor %}
         </ul>
-        {% for homework in object.get_homeworks %}
-            <a href="{% url "tasks:show_homework" homework.id %}">{{ homework }}</a>
-        {% endfor %}
     {% endif %}
+    {% for homework in object.get_homeworks %}
+        <a href="{% url "tasks:show_homework" homework.id %}">{{ homework }}</a>
+    {% endfor %}
 {% endblock %}

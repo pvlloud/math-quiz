@@ -83,6 +83,7 @@ class ShowPupil(LoginRequiredMixin, UserIsTeacherMixin, DetailView):
         context = super(ShowPupil, self).get_context_data()
         if self.object in self.request.user.teacher.pupils.all():
             context['attempts'] = self.object.attempts.all()
+        print context['object'].get_homeworks()
         return context
 
 

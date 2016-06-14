@@ -27,7 +27,7 @@ class Pupil(models.Model):
         return reverse('classes:show_pupil', args=[self.id])
 
     def get_homeworks(self):
-        return self.homeworks.filter(is_open=False)
+        return self.homeworks.all().filter(is_open=False)
 
 
 def login_pupil(sender, request, user, **kwargs):
